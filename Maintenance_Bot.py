@@ -1,6 +1,8 @@
 import os
+import shutil
 import stat
 import time
+from tkinter import filedialog as fd
 import tkinter as tk
 
 '''
@@ -19,6 +21,12 @@ class Frame_File(tk.LabelFrame):
     def ignore(self):
         self.destroy()
 
+    def move_file(self):
+        new_dir = fd.askdirectory(initialdir="./",
+                                        title="Move File: " + self.file)
+        shutil.move(self.file, new_dir)
+        self.destroy()
+
     def __init__(self, file, master, **options):
         tk.LabelFrame.__init__(self, master, **options)
         self.file = file
@@ -33,6 +41,10 @@ class Frame_File(tk.LabelFrame):
         btn_ignore = tk.Button(self, text="Ignore",
                                command=lambda: self.ignore())
         btn_ignore.grid(row=0, column=2)
+
+        btn_move = tk.Button(self, text="Move",
+                             command=lambda: self.move_file())
+        btn_move.grid(row=0, column=3)
         
         
 class Maintenance_Bot:
@@ -42,27 +54,30 @@ class Maintenance_Bot:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("Maintenance Bot")
-        self.files = []
 
         title_text = "Maintenance Bot, reporting for duty!\n"
-        title_text += "Let's clean up these files"
+        title_text += "Let's clean up these files."
         self.lbl_title = tk.Label(self.root, text=title_text)
         self.lbl_title.pack()
 
+        self.files = []
+        self.fr_files = tk.Frame(self.root)
+        self.fr_files.pack()
+
         self.btn_end = tk.Button(self.root, text="Good Bot! See You Next Week",
                                  command=lambda: self.end())
-        self.btn_end.pack()
+        self.btn_end.pack(pady=5)
 
     def start(self):
         ''' Fire the boi up and watch him help! '''
         self.root.mainloop()
 
     def end(self):
-        ''' How could you... he only wanted to help '''
+        ''' Duties done! Bot sleepy time. '''
         self.root.destroy()
 
     def add_file(self, file):
-        new_file = Frame_File(file, self.root)
+        new_file = Frame_File(file, self.fr_files)
         new_file.pack()
         self.files.append(new_file)
 
@@ -93,5 +108,11 @@ class Maintenance_Bot:
         os.chdir(cwd)
 
 def operate():
+    cwd = os.getcwd()
+    os.chdir("C:\\Users\\jsull\\Desktop\\Programming")
     my_boi = Maintenance_Bot()
     my_boi.perform_maintenance("../../Downloads", 1)
+    os.chdir(cwd)
+    
+
+operate()
