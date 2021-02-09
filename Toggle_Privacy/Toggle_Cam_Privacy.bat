@@ -1,0 +1,1 @@
+"C:\Users\jsull\AppData\Local\Programs\Python\Python39\python.exe" "C:\Users\jsull\Desktop\Programming\Desktop Automation\Toggle_Privacy\Toggle_Cam_Privacy.py"
