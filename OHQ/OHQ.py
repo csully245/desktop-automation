@@ -128,7 +128,7 @@ fr_pos.grid(row=4, column=0)
 root.mainloop()
 
 # Main loop
-dt = 1
+dt = 0.5
 last = time.perf_counter()
 while True:
     now = time.perf_counter()
