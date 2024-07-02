@@ -9,17 +9,33 @@ class ImageEditor:
         self.src = src
         self.img = Image.open(src)
 
-    def squareize(self):
-        """Turns a non-square picture into a square picture by adding white bars"""
+    def squareize(self, aspect_ratio=1, color=(255, 255, 255)):
+        """Corrects an image's aspect ratio by adding colored bars bars"""
 
         width, height = self.img.size
-        dimension = max((width, height))
-        img_new = Image.new("RGB", (dimension, dimension), (255, 255, 255))
         if width > height:
-            img_new.paste(self.img, (0, (width - height) // 2))
+            new_width = int(height*aspect_ratio)
+            new_height = height
         else:
-            # TODO: never goes down this path. Why is width always the larger value?
-            img_new.paste(self.img, ((height - width) // 2, 0))
+            new_width = width
+            new_height = int(width/aspect_ratio)
+
+        if width/height < aspect_ratio:
+            """Additional width needed - add vertical bars"""
+            if width > height:
+                new_width = int(height*aspect_ratio)
+                new_height = height
+            img_new = Image.new("RGB", (new_width, new_height), color)
+            img_new.paste(self.img, (int(new_width - width)//2,0))
+        elif width/height > aspect_ratio:
+            """Additional height needed - add horizontal bars"""
+            new_width = width
+            new_height = int(width/aspect_ratio)
+            img_new = Image.new("RGB", (new_width, new_height), color)
+            img_new.paste(self.img, (0,int(new_height - height)//2))
+        else:
+            """Aspect ratios already match, do nothing"""
+            pass
         self.img = img_new
 
     def overwrite(self):
@@ -34,8 +50,9 @@ class ImageEditor:
 
 
 if __name__ == "__main__":
-    ImageEditor.edit_dir(
-        "C:/Users/jsull/Downloads/fallpics-raw",
-        "C:/Users/jsull/Downloads/fallpics-edit",
-        ImageEditor.squareize,
-    )
+    src = "sample-files/src"
+    dst = "sample-files/dst"
+    for file in os.listdir(src):
+        ime = ImageEditor(os.path.join(src, file))
+        ime.squareize(aspect_ratio=16/9)
+        ime.img.save(os.path.join(dst, file))
