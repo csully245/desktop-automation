@@ -3,7 +3,6 @@
 from PIL import Image
 import os
 
-
 class ImageEditor:
     def __init__(self, src):
         self.src = src
@@ -11,6 +10,8 @@ class ImageEditor:
 
     def squareize(self, aspect_ratio=1, color=(255, 255, 255)):
         """Corrects an image's aspect ratio by adding colored bars bars"""
+        if color == "average":
+            color = self.get_average_color()
 
         width, height = self.img.size
         if width > height:
@@ -47,6 +48,22 @@ class ImageEditor:
             ime = ImageEditor(os.path.join(src, file))
             func(ime)
             ime.img.save(os.path.join(dest, file))
+    
+    def get_average_color(self):
+        width, height = self.img.size
+        total_red = 0
+        total_green = 0
+        total_blue = 0
+        total_pixels = width * height
+        for x in range(width):
+            for y in range(height):
+                pixel = self.img.getpixel((x, y))
+                total_red += pixel[0]
+                total_green += pixel[1]
+                total_blue += pixel[2]
+        return (total_red // total_pixels,
+                total_green // total_pixels,
+                total_blue // total_pixels)
 
 
 if __name__ == "__main__":
@@ -54,5 +71,5 @@ if __name__ == "__main__":
     dst = "sample-files/dst"
     for file in os.listdir(src):
         ime = ImageEditor(os.path.join(src, file))
-        ime.squareize(aspect_ratio=16/9)
+        ime.squareize(aspect_ratio=16/9, color="average")
         ime.img.save(os.path.join(dst, file))
