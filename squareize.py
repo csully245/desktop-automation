@@ -23,9 +23,8 @@ class ImageEditor:
 
         if width/height < aspect_ratio:
             """Additional width needed - add vertical bars"""
-            if width > height:
-                new_width = int(height*aspect_ratio)
-                new_height = height
+            new_width = int(height*aspect_ratio)
+            new_height = height
             img_new = Image.new("RGB", (new_width, new_height), color)
             img_new.paste(self.img, (int(new_width - width)//2,0))
         elif width/height > aspect_ratio:
@@ -67,6 +66,7 @@ class ImageEditor:
 
 
 if __name__ == "__main__":
+    """C:/Users/jsull/csully245/MTG Wallpaper/Uncropped"""
     src = "sample-files/src"
     dst = "sample-files/dst"
     for file in os.listdir(src):
